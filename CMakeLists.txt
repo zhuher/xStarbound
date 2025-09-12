@@ -10,6 +10,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(CMakeDependentOption)
 option (STAR_INSTALL_VCPKG "Automatically install VCPKG" OFF)
 option (STAR_RECENT_COMPILER "Turn this on if you have GCC 11+ or Clang 12+" OFF)
+option (STAR_USE_EXTERN_XXHASH "Use the packaged xxhash" ON)
 
 option(STAR_BUILD_GUI "Build GUI utilities and Client" ON)
 cmake_dependent_option(STAR_BUILD_QT_TOOLS "Build GUI utilities. Requires Qt 6.7 or higher" OFF "STAR_BUILD_GUI" OFF)

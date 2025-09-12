@@ -359,7 +359,7 @@ add_library(Star::GameMain ALIAS star_game_main)
 
 # Need to link all objects as a group in GCC/Clang due to circular dependencies.
 add_library(star_game_interface INTERFACE)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     target_link_libraries(star_game_interface
             INTERFACE
             Star::GameInterfaces

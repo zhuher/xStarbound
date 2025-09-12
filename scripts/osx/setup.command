@@ -11,7 +11,7 @@ cp -r /Library/Frameworks/SDL2.framework dist/SDL2.framework
 mkdir -p build
 cd build
 
-CC=clang CXX=clang++ /Applications/CMake.app/Contents/bin/cmake \
+CC=clang CXX=clang++ cmake \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=true \
   -DCMAKE_BUILD_TYPE=Release \
   -DSTAR_USE_JEMALLOC=ON \

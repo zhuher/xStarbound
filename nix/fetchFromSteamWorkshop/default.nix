@@ -23,13 +23,11 @@ stdenvNoCC.mkDerivation {
       # Disabling the bootstrap in turn means that steamcmd will miss several dynamically linked libraries,
       # which we instead copy over ourselves.
       pinnedSteamcmd = steamcmd.overrideAttrs (prev: {
-        installPhase =
-          (prev.installPhase or "")
-          + ''
-            sed -i '$d' "$out/bin/steamcmd"
-            echo '${lib.getExe steam-run} "$STEAMROOT/steamcmd.sh" -inhibitbootstrap "$@"' >> "$out/bin/steamcmd"
-            cp -r ${../pinnedSteam}/* "$out/share/steamcmd"
-          '';
+        installPhase = (prev.installPhase or "") + ''
+          sed -i '$d' "$out/bin/steamcmd"
+          echo '${lib.getExe steam-run} "$STEAMROOT/steamcmd.sh" -inhibitbootstrap "$@"' >> "$out/bin/steamcmd"
+          cp -r ${../pinnedSteam}/* "$out/share/steamcmd"
+        '';
       });
     in
     [ pinnedSteamcmd ];

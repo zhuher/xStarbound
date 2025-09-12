@@ -257,20 +257,29 @@ public:
     }
 
     Logger::info("Application: Initializing SDL Video");
-    if (SDL_InitSubSystem(SDL_INIT_VIDEO))
-      throw ApplicationException(strf("Couldn't initialize SDL Video: {}", SDL_GetError()));
+    if (SDL_InitSubSystem(SDL_INIT_VIDEO)) {
+      String errorMsg = SDL_GetError();
+      Logger::error("Application: SDL Video init failed (is SDL_VIDEODRIVER set?): {}", errorMsg);
+      throw ApplicationException(strf("Couldn't initialize SDL Video: {}", errorMsg));
+    }
 
     Logger::info("Application: Initializing SDL Controller");
-    if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER))
-      throw ApplicationException(strf("Couldn't initialize SDL Controller: {}", SDL_GetError()));
+    if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER)) {
+      String errorMsg = SDL_GetError();
+      Logger::error("Application: SDL Controller init failed: {}", errorMsg);
+      throw ApplicationException(strf("Couldn't initialize SDL Controller: {}", errorMsg));
+    }
 
 #ifdef STAR_SYSTEM_WINDOWS // Newer SDL is defaulting to xaudio2, which does not support audio capture
     SDL_setenv("SDL_AUDIODRIVER", "directsound", 1);
 #endif
 
     Logger::info("Application: Initializing SDL Audio");
-    if (SDL_InitSubSystem(SDL_INIT_AUDIO))
-      throw ApplicationException(strf("Couldn't initialize SDL Audio: {}", SDL_GetError()));
+    if (SDL_InitSubSystem(SDL_INIT_AUDIO)) {
+      String errorMsg = SDL_GetError();
+      Logger::error("Application: SDL Audio init failed: {}", errorMsg);
+      throw ApplicationException(strf("Couldn't initialize SDL Audio: {}", errorMsg));
+    }
 
     Logger::info("Application: using Audio Driver '{}'", SDL_GetCurrentAudioDriver());
 
@@ -283,8 +292,11 @@ public:
     Logger::info("Application: Creating SDL Window");
     m_sdlWindow = SDL_CreateWindow(m_windowTitle.utf8Ptr(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         m_windowSize[0], m_windowSize[1], SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    if (!m_sdlWindow)
-      throw ApplicationException::format("Application: Could not create SDL window: {}", SDL_GetError());
+    if (!m_sdlWindow) {
+      String errorMsg = SDL_GetError();
+      Logger::error("Application: SDL window creation failed: {}", errorMsg);
+      throw ApplicationException::format("Application: Could not create SDL window: {}", errorMsg);
+    }
 
     SDL_ShowWindow(m_sdlWindow);
     SDL_RaiseWindow(m_sdlWindow);
@@ -992,9 +1004,14 @@ int runMainApplication(ApplicationUPtr application, StringList cmdLineArgs) {
     }
     Logger::info("Application: stopped gracefully");
     return 0;
+  } catch (ApplicationException const& e) {
+    Logger::error("Application: {}", e.what());
+    fatalException(e, true);
   } catch (std::exception const& e) {
+    Logger::error("Application: {}", e.what());
     fatalException(e, true);
   } catch (...) {
+    Logger::error("Application: Unknown Exception");
     fatalError("Unknown Exception", true);
   }
   return 1;

@@ -40,7 +40,7 @@ if(STAR_SYSTEM_WINDOWS)
 elseif(STAR_SYSTEM_MACOS)
 
     # MacOS is special, as we'll create a proper App bundle.
-    set(STAR_INSTALL_BASEDIR "xSB Client.app/Contents/")
+    set(STAR_INSTALL_BASEDIR "xSB Client.app/Contents")
     set(STAR_INSTALL_BINDIR ${STAR_INSTALL_BASEDIR}/MacOS)
     set(STAR_INSTALL_LIBDIR ${STAR_INSTALL_BASEDIR}/Frameworks)
     set(STAR_INSTALL_DATADIR ${STAR_INSTALL_BASEDIR}/Resources)
